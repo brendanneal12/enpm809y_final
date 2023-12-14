@@ -74,8 +74,8 @@ void Final::RobotController::part_broadcast_timer_cb_1_(const mage_msgs::msg::Ad
 
     geometry_msgs::msg::TransformStamped part_transform_stamped;
     part_transform_stamped.header.stamp = current_time_;
-    part_transform_stamped.header.frame_id = "logical_camera_link";
-    part_transform_stamped.child_frame_id = "part_frame";
+    part_transform_stamped.header.frame_id = "camera1_frame";
+    part_transform_stamped.child_frame_id = "part_1_frame";
 
     part_transform_stamped.transform.translation.x = msg->part_poses[0].pose.position.x;
     part_transform_stamped.transform.translation.y = msg->part_poses[0].pose.position.y;
@@ -96,8 +96,8 @@ void Final::RobotController::part_broadcast_timer_cb_2_(const mage_msgs::msg::Ad
 
     geometry_msgs::msg::TransformStamped part_transform_stamped;
     part_transform_stamped.header.stamp = current_time_;
-    part_transform_stamped.header.frame_id = "logical_camera_link";
-    part_transform_stamped.child_frame_id = "part_frame";
+    part_transform_stamped.header.frame_id = "camera2_frame";
+    part_transform_stamped.child_frame_id = "part_2_frame";
 
     part_transform_stamped.transform.translation.x = msg->part_poses[0].pose.position.x;
     part_transform_stamped.transform.translation.y = msg->part_poses[0].pose.position.y;
@@ -118,8 +118,8 @@ void Final::RobotController::part_broadcast_timer_cb_3_(const mage_msgs::msg::Ad
 
     geometry_msgs::msg::TransformStamped part_transform_stamped;
     part_transform_stamped.header.stamp = current_time_;
-    part_transform_stamped.header.frame_id = "logical_camera_link";
-    part_transform_stamped.child_frame_id = "part_frame";
+    part_transform_stamped.header.frame_id = "camera3_frame";
+    part_transform_stamped.child_frame_id = "part_3_frame";
 
     part_transform_stamped.transform.translation.x = msg->part_poses[0].pose.position.x;
     part_transform_stamped.transform.translation.y = msg->part_poses[0].pose.position.y;
@@ -140,8 +140,8 @@ void Final::RobotController::part_broadcast_timer_cb_4_(const mage_msgs::msg::Ad
 
     geometry_msgs::msg::TransformStamped part_transform_stamped;
     part_transform_stamped.header.stamp = current_time_;
-    part_transform_stamped.header.frame_id = "logical_camera_link";
-    part_transform_stamped.child_frame_id = "part_frame";
+    part_transform_stamped.header.frame_id = "camera4_frame";
+    part_transform_stamped.child_frame_id = "part_4_frame";
 
     part_transform_stamped.transform.translation.x = msg->part_poses[0].pose.position.x;
     part_transform_stamped.transform.translation.y = msg->part_poses[0].pose.position.y;
@@ -162,8 +162,8 @@ void Final::RobotController::part_broadcast_timer_cb_5_(const mage_msgs::msg::Ad
 
     geometry_msgs::msg::TransformStamped part_transform_stamped;
     part_transform_stamped.header.stamp = current_time_;
-    part_transform_stamped.header.frame_id = "logical_camera_link";
-    part_transform_stamped.child_frame_id = "part_frame";
+    part_transform_stamped.header.frame_id = "camera5_frame";
+    part_transform_stamped.child_frame_id = "part_5_frame";
 
     part_transform_stamped.transform.translation.x = msg->part_poses[0].pose.position.x;
     part_transform_stamped.transform.translation.y = msg->part_poses[0].pose.position.y;
@@ -185,7 +185,7 @@ void Final::RobotController::part_frame_listener_1_()
     try
     {
         // Look up transformation between detected part and odom frame and store.
-        part = part_tf_buffer_1_->lookupTransform("odom", "part_frame", tf2::TimePointZero);
+        part = part_tf_buffer_1_->lookupTransform("map", "part_1_frame", tf2::TimePointZero);
         std::array<double, 3> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
@@ -205,7 +205,7 @@ void Final::RobotController::part_frame_listener_2_()
     try
     {
         // Look up transformation between detected part and odom frame and store.
-        part = part_tf_buffer_1_->lookupTransform("odom", "part_frame", tf2::TimePointZero);
+        part = part_tf_buffer_1_->lookupTransform("map", "part_2_frame", tf2::TimePointZero);
         std::array<double, 3> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
@@ -214,7 +214,7 @@ void Final::RobotController::part_frame_listener_2_()
     }
     catch (const tf2::TransformException &except)
     {
-        // RCLCPP_INFO_STREAM(this->get_logger(), except.what());
+        RCLCPP_INFO_STREAM(this->get_logger(), except.what());
     }
 }
 
@@ -225,7 +225,7 @@ void Final::RobotController::part_frame_listener_3_()
     try
     {
         // Look up transformation between detected part and odom frame and store.
-        part = part_tf_buffer_1_->lookupTransform("odom", "part_frame", tf2::TimePointZero);
+        part = part_tf_buffer_1_->lookupTransform("map", "part_3_frame", tf2::TimePointZero);
         std::array<double, 3> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
@@ -245,7 +245,7 @@ void Final::RobotController::part_frame_listener_4_()
     try
     {
         // Look up transformation between detected part and odom frame and store.
-        part = part_tf_buffer_1_->lookupTransform("odom", "part_frame", tf2::TimePointZero);
+        part = part_tf_buffer_1_->lookupTransform("map", "part_4_frame", tf2::TimePointZero);
         std::array<double, 3> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
@@ -265,7 +265,7 @@ void Final::RobotController::part_frame_listener_5_()
     try
     {
         // Look up transformation between detected part and odom frame and store.
-        part = part_tf_buffer_1_->lookupTransform("odom", "part_frame", tf2::TimePointZero);
+        part = part_tf_buffer_1_->lookupTransform("map", "part_5_frame", tf2::TimePointZero);
         std::array<double, 3> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
@@ -453,4 +453,12 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
         detected_parts_cam_5_.emplace_back(color, type, position);
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
+}
+
+int main(int argc, char **argv)
+{
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<Final::RobotController>("robot_controller");
+  rclcpp::spin(node);
+  rclcpp::shutdown();
 }

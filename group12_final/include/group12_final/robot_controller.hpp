@@ -107,6 +107,21 @@ namespace Final
             // Set up clock subscriptions and bind it to a callback.
             clock_subscription_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", rclcpp::SensorDataQoS(),
                                                                                        std::bind(&RobotController::clock_sub_cb_, this, std::placeholders::_1));
+
+            // Listener Timer 1
+            part_listener_timer_1_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_1_, this));
+
+            // Listener Timer 1
+            part_listener_timer_2_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_2_, this));
+
+            // Listener Timer 1
+            part_listener_timer_3_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_3_, this));
+
+            // Listener Timer 1
+            part_listener_timer_4_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_4_, this));
+
+            // Listener Timer 1
+            part_listener_timer_5_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_5_, this));
         }
 
     private:
