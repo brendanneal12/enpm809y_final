@@ -169,6 +169,32 @@ namespace Final
 
         // Sim Attributes
         rclcpp::Time current_time_;
+
+        // Part Storage Attributes
+        // Camera 1
+        std::string part_type_1_;
+        std::string part_color_1_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_1_;
+
+        // Camera 2
+        std::string part_type_2_;
+        std::string part_color_2_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_2_;
+
+        // Camera 3
+        std::string part_type_3_;
+        std::string part_color_3_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_3_;
+
+        // Camera 4
+        std::string part_type_4_;
+        std::string part_color_4_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_4_;
+
+        // Camera 5
+        std::string part_type_5_;
+        std::string part_color_5_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_5_;
         // ======================================== methods ===========================================
 
         /**
@@ -222,31 +248,106 @@ namespace Final
         void part_broadcast_timer_cb_1_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
 
         /**
-         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @brief Timer callback to broadcast part pose to tf. from camera 2.
          * @param msg
          *
          */
         void part_broadcast_timer_cb_2_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
 
         /**
-         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @brief Timer callback to broadcast part pose to tf. from camera 3.
          * @param msg
          *
          */
         void part_broadcast_timer_cb_3_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
 
         /**
-         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @brief Timer callback to broadcast part pose to tf. from camera 4.
          * @param msg
          *
          */
         void part_broadcast_timer_cb_4_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
 
         /**
-         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @brief Timer callback to broadcast part pose to tf. from camera 5.
          * @param msg
          *
          */
         void part_broadcast_timer_cb_5_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
+
+        /**
+         * @brief Method to listen for transformation updates for parts from camera 1.
+         */
+        void part_frame_listener_1_();
+
+        /**
+         * @brief Method to listen for transformation updates for parts from camera 2.
+         */
+        void part_frame_listener_2_();
+
+        /**
+         * @brief Method to listen for transformation updates for parts from camera 3.
+         */
+        void part_frame_listener_3_();
+
+        /**
+         * @brief Method to listen for transformation updates for parts from camera 4.
+         */
+        void part_frame_listener_4_();
+
+        /**
+         * @brief Method to listen for transformation updates for parts from camera 5.
+         */
+        void part_frame_listener_5_();
+
+        /**
+         * @brief Method to ensure parts seen are unique.
+         * @param new_part_color
+         * @param new_part_type
+         * @return true
+         * @return false
+         */
+        bool check_duplicate_parts_1(const std::string &new_part_color, const std::string &new_part_type);
+        bool check_duplicate_parts_2(const std::string &new_part_color, const std::string &new_part_type);
+        bool check_duplicate_parts_3(const std::string &new_part_color, const std::string &new_part_type);
+        bool check_duplicate_parts_4(const std::string &new_part_color, const std::string &new_part_type);
+        bool check_duplicate_parts_5(const std::string &new_part_color, const std::string &new_part_type);
+
+        /**
+         * @brief Method to add seen parts to data structure.
+         * @param color
+         * @param type
+         * @param position
+         */
+        void add_seen_part_1(const std::string &color, const std::string &type, const std::array<double, 3> &position);
+        void add_seen_part_2(const std::string &color, const std::string &type, const std::array<double, 3> &position);
+        void add_seen_part_3(const std::string &color, const std::string &type, const std::array<double, 3> &position);
+        void add_seen_part_4(const std::string &color, const std::string &type, const std::array<double, 3> &position);
+        void add_seen_part_5(const std::string &color, const std::string &type, const std::array<double, 3> &position);
+
+        /**
+         * @brief Convert a part type to a string
+         *
+         * @param part_type
+         * @return battery
+         * @return regulator
+         * @return sensor
+         * @return pump
+         * @return unknown
+         */
+        std::string convert_part_type_to_string(uint8_t part_type);
+
+        /**
+         * @brief Convert a part color to a string
+         *
+         * @param part_color
+         * @return red
+         * @return green
+         * @return blue
+         * @return purple
+         * @return orange
+         * @return unknown
+         */
+        std::string convert_part_color_to_string(uint8_t part_color);
     }; // Class RobotController
 } // Namespace Final
