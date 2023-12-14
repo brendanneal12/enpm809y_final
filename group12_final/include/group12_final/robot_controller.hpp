@@ -103,6 +103,10 @@ namespace Final
             // Set up logical camera 5 subscription and bind it to a callback.
             advanced_camera_subscription_5_ = this->create_subscription<mage_msgs::msg::AdvancedLogicalCameraImage>("mage/camera5/image", rclcpp::SensorDataQoS(),
                                                                                                                     std::bind(&RobotController::advanced_camera_sub_cb_5_, this, std::placeholders::_1));
+
+            // Set up clock subscriptions and bind it to a callback.
+            clock_subscription_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", rclcpp::SensorDataQoS(),
+                                                                                       std::bind(&RobotController::clock_sub_cb_, this, std::placeholders::_1));
         }
 
     private:
@@ -116,6 +120,7 @@ namespace Final
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_3_;
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_4_;
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_5_;
+        rclcpp::Subscription<rosgraph_msgs::msg::Clock>::SharedPtr clock_subscription_;
 
         // Broadcasters
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_1_;
@@ -161,6 +166,9 @@ namespace Final
 
         // Marker Attributes
         std::string marker_id_;
+
+        // Sim Attributes
+        rclcpp::Time current_time_;
         // ======================================== methods ===========================================
 
         /**
@@ -198,5 +206,47 @@ namespace Final
          * @param msg
          */
         void advanced_camera_sub_cb_5_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
+
+        /**
+         * @brief Subscriber callback to update current time.
+         * @param msg
+         */
+
+        void clock_sub_cb_(const rosgraph_msgs::msg::Clock::SharedPtr msg);
+
+        /**
+         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @param msg
+         *
+         */
+        void part_broadcast_timer_cb_1_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
+
+        /**
+         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @param msg
+         *
+         */
+        void part_broadcast_timer_cb_2_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
+
+        /**
+         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @param msg
+         *
+         */
+        void part_broadcast_timer_cb_3_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
+
+        /**
+         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @param msg
+         *
+         */
+        void part_broadcast_timer_cb_4_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
+
+        /**
+         * @brief Timer callback to broadcast part pose to tf. from camera 1.
+         * @param msg
+         *
+         */
+        void part_broadcast_timer_cb_5_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg);
     }; // Class RobotController
 } // Namespace Final
