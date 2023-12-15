@@ -181,6 +181,7 @@ namespace Final
 
         // Marker Attributes
         std::string marker_id_;
+        bool marker_got_{false};
 
         // Sim Attributes
         rclcpp::Time current_time_;
@@ -190,26 +191,31 @@ namespace Final
         std::string part_type_1_;
         std::string part_color_1_;
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_1_;
+        bool part_got_cam_1_{false};
 
         // Camera 2
         std::string part_type_2_;
         std::string part_color_2_;
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_2_;
+        bool part_got_cam_2_{false};
 
         // Camera 3
         std::string part_type_3_;
         std::string part_color_3_;
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_3_;
+        bool part_got_cam_3_{false};
 
         // Camera 4
         std::string part_type_4_;
         std::string part_color_4_;
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_4_;
+        bool part_got_cam_4_{false};
 
         // Camera 5
         std::string part_type_5_;
         std::string part_color_5_;
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_5_;
+        bool part_got_cam_5_{false};
         // ======================================== methods ===========================================
 
         /**
