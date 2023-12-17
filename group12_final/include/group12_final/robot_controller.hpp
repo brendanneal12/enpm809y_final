@@ -62,11 +62,11 @@ namespace Final
             this->declare_parameter("aruco_0.wp5.color", "blue");
             a0_wp5_color_ = this->get_parameter("aruco_0.wp5.color").as_string();
 
-            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp1_type_, a0_wp1_color_);
-            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp2_type_, a0_wp2_color_);
-            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp3_type_, a0_wp3_color_);
-            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp4_type_, a0_wp4_color_);
-            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp5_type_, a0_wp5_color_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp1_color_, a0_wp1_type_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp2_color_, a0_wp2_type_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp3_color_, a0_wp3_type_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp4_color_, a0_wp4_type_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp5_color_, a0_wp5_type_);
 
             // Aruco 1
             this->declare_parameter("aruco_1", "aruco_1");
@@ -92,11 +92,11 @@ namespace Final
             this->declare_parameter("aruco_1.wp5.color", "purple");
             a1_wp5_color_ = this->get_parameter("aruco_1.wp5.color").as_string();
 
-            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp1_type_, a1_wp1_color_);
-            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp2_type_, a1_wp2_color_);
-            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp3_type_, a1_wp3_color_);
-            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp4_type_, a1_wp4_color_);
-            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp5_type_, a1_wp5_color_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp1_color_, a1_wp1_type_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp2_color_, a1_wp2_type_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp3_color_, a1_wp3_type_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp4_color_, a1_wp4_type_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp5_color_, a1_wp5_type_);
 
             // Initialize the transform broadcasters
             part_tf_broadcaster_1_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
@@ -208,9 +208,11 @@ namespace Final
 
         // Aruco 0 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_0_waypoints_;
+        std::vector<std::array<double,3>> a0_wp_xy_;
 
         // Aruco 1 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_1_waypoints_;
+        std::vector<std::array<double,3>> a1_wp_xy_;
         // ======================================== attributes ========================================
 
         // Subscribers
@@ -303,11 +305,10 @@ namespace Final
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_5_;
         bool part_got_cam_5_{false};
 
-        // Parts in World
-        std::vector<std::vector<std::tuple<std::string, std::string, std::array<double, 3>>>> parts_in_world_;
+        std::map<std::tuple<std::string,std::string>, std::array<double,3>> parts_in_world_;
 
         // Generated Waypoints
-        std::vector<std::array<double,2>> generated_waypoints_;
+        std::vector<std::array<double,3>> use_waypoints_;
 
 
         // ======================================== methods ===========================================

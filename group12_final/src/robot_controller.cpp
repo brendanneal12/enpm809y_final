@@ -23,7 +23,6 @@ void Final::RobotController::advanced_camera_sub_cb_1_(const mage_msgs::msg::Adv
             part_type_1_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_1_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_1_(msg);
-            parts_in_world_.emplace_back(detected_parts_cam_1_);
             advanced_camera_subscription_1_.reset();
         }
     }
@@ -40,7 +39,6 @@ void Final::RobotController::advanced_camera_sub_cb_2_(const mage_msgs::msg::Adv
             part_type_2_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_2_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_2_(msg);
-            parts_in_world_.emplace_back(detected_parts_cam_2_);
             advanced_camera_subscription_2_.reset();
         }
     }
@@ -56,7 +54,6 @@ void Final::RobotController::advanced_camera_sub_cb_3_(const mage_msgs::msg::Adv
             part_type_3_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_3_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_3_(msg);
-            parts_in_world_.emplace_back(detected_parts_cam_3_);
             advanced_camera_subscription_3_.reset();
         }
     }
@@ -72,7 +69,6 @@ void Final::RobotController::advanced_camera_sub_cb_4_(const mage_msgs::msg::Adv
             part_type_4_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_4_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_4_(msg);
-            parts_in_world_.emplace_back(detected_parts_cam_4_);
             advanced_camera_subscription_4_.reset();
         }
     }
@@ -88,7 +84,6 @@ void Final::RobotController::advanced_camera_sub_cb_5_(const mage_msgs::msg::Adv
             part_type_5_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_5_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_5_(msg);
-            parts_in_world_.emplace_back(detected_parts_cam_5_);
             advanced_camera_subscription_5_.reset();
         }
     }
@@ -367,6 +362,7 @@ void Final::RobotController::add_seen_part_1(const std::string &color, const std
     {
         // Add new part to data structure.
         detected_parts_cam_1_.emplace_back(color, type, position);
+        parts_in_world_[std::make_tuple(color, type)] = position;
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
 }
@@ -396,6 +392,7 @@ void Final::RobotController::add_seen_part_2(const std::string &color, const std
     {
         // Add new part to data structure.
         detected_parts_cam_2_.emplace_back(color, type, position);
+        parts_in_world_[std::make_tuple(color, type)] = position;
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
 }
@@ -425,6 +422,7 @@ void Final::RobotController::add_seen_part_3(const std::string &color, const std
     {
         // Add new part to data structure.
         detected_parts_cam_3_.emplace_back(color, type, position);
+        parts_in_world_[std::make_tuple(color, type)] = position;
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
 }
@@ -454,6 +452,7 @@ void Final::RobotController::add_seen_part_4(const std::string &color, const std
     {
         // Add new part to data structure.
         detected_parts_cam_4_.emplace_back(color, type, position);
+        parts_in_world_[std::make_tuple(color, type)] = position;
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
 }
@@ -483,6 +482,7 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
     {
         // Add new part to data structure.
         detected_parts_cam_5_.emplace_back(color, type, position);
+        parts_in_world_.emplace(std::make_tuple(color,type), position);
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
 }
@@ -492,6 +492,28 @@ void Final::RobotController::generate_waypoints_from_params()
     if (this->has_parameter(marker_id_))
     {
         marker_instruction_ = this->get_parameter(marker_id_).get_value<std::string>();
+    }
+
+    if (marker_instruction_ == "aruco_0")
+    {
+        RCLCPP_INFO_STREAM(this->get_logger(), "Generating Waypoints: Aruco 0");
+        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp1_color_, a0_wp1_type_)]);
+        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp2_color_, a0_wp2_type_)]);
+        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp3_color_, a0_wp3_type_)]);
+        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp4_color_, a0_wp4_type_)]);
+        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp5_color_, a0_wp5_type_)]);
+        use_waypoints_ = a0_wp_xy_;
+    }
+
+    else if (marker_instruction_ == "aruco_1")
+    {
+        RCLCPP_INFO_STREAM(this->get_logger(), "Generating Waypoints: Aruco 1");
+        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp1_color_, a1_wp1_type_)]);
+        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp2_color_, a1_wp2_type_)]);
+        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp3_color_, a1_wp3_type_)]);
+        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp4_color_, a1_wp4_type_)]);
+        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp5_color_, a1_wp5_type_)]);
+        use_waypoints_ = a1_wp_xy_;
     }
 }
 
