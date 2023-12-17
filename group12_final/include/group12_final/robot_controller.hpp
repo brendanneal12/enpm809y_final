@@ -37,15 +37,66 @@ namespace Final
         RobotController(std::string node_name) : Node(node_name)
         {
 
-            // Declare parameters -> Grabs from .yaml
-            // this->declare_parameter("aruco_0", "right_90");
-            // aruco_marker_0_ = this->get_parameter("aruco_marker_0").as_string();
+            // Declare parameters -> Grabs from .yaml via launch file.
+            // Aruco 0
+            this->declare_parameter("aruco_0", "aruco_0");
+            aruco_0_ = this->get_parameter("aruco_0").as_string();
+            this->declare_parameter("aruco_0.wp1.type", "battery");
+            a0_wp1_type_ = this->get_parameter("aruco_0.wp1.type").as_string();
+            this->declare_parameter("aruco_0.wp1.color", "green");
+            a0_wp1_color_ = this->get_parameter("aruco_0.wp1.color").as_string();
+            this->declare_parameter("aruco_0.wp2.type", "battery");
+            a0_wp2_type_ = this->get_parameter("aruco_0.wp2.type").as_string();
+            this->declare_parameter("aruco_0.wp2.color", "green");
+            a0_wp2_color_ = this->get_parameter("aruco_0.wp2.color").as_string();
+            this->declare_parameter("aruco_0.wp3.type", "battery");
+            a0_wp3_type_ = this->get_parameter("aruco_0.wp3.type").as_string();
+            this->declare_parameter("aruco_0.wp3.color", "green");
+            a0_wp3_color_ = this->get_parameter("aruco_0.wp3.color").as_string();
+            this->declare_parameter("aruco_0.wp4.type", "battery");
+            a0_wp4_type_ = this->get_parameter("aruco_0.wp4.type").as_string();
+            this->declare_parameter("aruco_0.wp4.color", "green");
+            a0_wp4_color_ = this->get_parameter("aruco_0.wp4.color").as_string();
+            this->declare_parameter("aruco_0.wp5.type", "battery");
+            a0_wp5_type_ = this->get_parameter("aruco_0.wp5.type").as_string();
+            this->declare_parameter("aruco_0.wp5.color", "green");
+            a0_wp5_color_ = this->get_parameter("aruco_0.wp5.color").as_string();
 
-            // this->declare_parameter("aruco_1", "left_90");
-            // aruco_marker_1_ = this->get_parameter("aruco_marker_1").as_string();
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp1_type_, a0_wp1_color_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp2_type_, a0_wp2_color_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp3_type_, a0_wp3_color_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp4_type_, a0_wp4_color_);
+            aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp5_type_, a0_wp5_color_);
 
-            // this->declare_parameter("aruco_2", "end");
-            // aruco_marker_2_ = this->get_parameter("aruco_marker_2").as_string();
+            // Aruco 1
+            this->declare_parameter("aruco_1", "aruco_1");
+            aruco_1_ = this->get_parameter("aruco_1").as_string();
+            this->declare_parameter("aruco_1.wp1.type", "battery");
+            a1_wp1_type_ = this->get_parameter("aruco_1.wp1.type").as_string();
+            this->declare_parameter("aruco_1.wp1.color", "green");
+            a1_wp1_color_ = this->get_parameter("aruco_1.wp1.color").as_string();
+            this->declare_parameter("aruco_1.wp2.type", "battery");
+            a1_wp2_type_ = this->get_parameter("aruco_1.wp2.type").as_string();
+            this->declare_parameter("aruco_1.wp2.color", "green");
+            a1_wp2_color_ = this->get_parameter("aruco_1.wp2.color").as_string();
+            this->declare_parameter("aruco_1.wp3.type", "battery");
+            a1_wp3_type_ = this->get_parameter("aruco_1.wp3.type").as_string();
+            this->declare_parameter("aruco_1.wp3.color", "green");
+            a1_wp3_color_ = this->get_parameter("aruco_1.wp3.color").as_string();
+            this->declare_parameter("aruco_1.wp4.type", "battery");
+            a1_wp4_type_ = this->get_parameter("aruco_1.wp4.type").as_string();
+            this->declare_parameter("aruco_1.wp4.color", "green");
+            a1_wp4_color_ = this->get_parameter("aruco_1.wp4.color").as_string();
+            this->declare_parameter("aruco_1.wp5.type", "battery");
+            a1_wp5_type_ = this->get_parameter("aruco_1.wp5.type").as_string();
+            this->declare_parameter("aruco_1.wp5.color", "green");
+            a1_wp5_color_ = this->get_parameter("aruco_1.wp5.color").as_string();
+
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp1_type_, a1_wp1_color_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp2_type_, a1_wp2_color_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp3_type_, a1_wp3_color_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp4_type_, a1_wp4_color_);
+            aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp5_type_, a1_wp5_color_);
 
             // Initialize the transform broadcasters
             part_tf_broadcaster_1_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
@@ -122,10 +173,44 @@ namespace Final
 
             // Listener Timer 1
             part_listener_timer_5_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_5_, this));
+
+            parameter_cb_ = this->add_on_set_parameters_callback(std::bind(&RobotController::parameters_cb, this, std::placeholders::_1));
         }
 
     private:
         // ======================================== parameters ========================================
+        OnSetParametersCallbackHandle::SharedPtr parameter_cb_;
+        // Aruco 0
+        std::string aruco_0_;
+        std::string a0_wp1_color_;
+        std::string a0_wp1_type_;
+        std::string a0_wp2_color_;
+        std::string a0_wp2_type_;
+        std::string a0_wp3_color_;
+        std::string a0_wp3_type_;
+        std::string a0_wp4_color_;
+        std::string a0_wp4_type_;
+        std::string a0_wp5_color_;
+        std::string a0_wp5_type_;
+
+        // Aruco 1
+        std::string aruco_1_;
+        std::string a1_wp1_color_;
+        std::string a1_wp1_type_;
+        std::string a1_wp2_color_;
+        std::string a1_wp2_type_;
+        std::string a1_wp3_color_;
+        std::string a1_wp3_type_;
+        std::string a1_wp4_color_;
+        std::string a1_wp4_type_;
+        std::string a1_wp5_color_;
+        std::string a1_wp5_type_;
+
+        // Aruco 0 Waypoints
+        std::vector<std::tuple<std::string, std::string, std::string>> aruco_0_waypoints_;
+
+        // Aruco 1 Waypoints
+        std::vector<std::tuple<std::string, std::string, std::string>> aruco_1_waypoints_;
         // ======================================== attributes ========================================
 
         // Subscribers
@@ -370,5 +455,12 @@ namespace Final
          * @return unknown
          */
         std::string convert_part_color_to_string(uint8_t part_color);
+
+        /**
+         * @brief Parameter callback to watch for changes of parameters.
+         * @param parameters
+         * @return result
+         */
+        rcl_interfaces::msg::SetParametersResult parameters_cb(const std::vector<rclcpp::Parameter> &parameters);
     }; // Class RobotController
 } // Namespace Final

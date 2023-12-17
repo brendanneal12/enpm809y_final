@@ -5,7 +5,7 @@ void Final::RobotController::turtle_camera_sub_cb_(const ros2_aruco_interfaces::
     if (!marker_got_)
     {
         // Get Aruco Marker ID.
-        marker_id_ = "aruco_marker_" + std::to_string(msg->marker_ids[0]);
+        marker_id_ = "aruco_" + std::to_string(msg->marker_ids[0]);
         RCLCPP_INFO_STREAM(this->get_logger(), "Got Aruco Marker: " << marker_id_);
         marker_got_ = true;
         turtle_camera_subscription_.reset();
@@ -324,15 +324,15 @@ std::string Final::RobotController::convert_part_color_to_string(uint8_t part_co
 {
     // Match numeric part color to string part color based off of message definition.
     if (part_color == mage_msgs::msg::Part::RED)
-        return "Red";
+        return "red";
     else if (part_color == mage_msgs::msg::Part::GREEN)
-        return "Green";
+        return "green";
     else if (part_color == mage_msgs::msg::Part::BLUE)
-        return "Blue";
+        return "blue";
     else if (part_color == mage_msgs::msg::Part::PURPLE)
-        return "Purple";
+        return "purple";
     else if (part_color == mage_msgs::msg::Part::ORANGE)
-        return "Orange";
+        return "orange";
     else
         return "Uknown";
 }
@@ -480,6 +480,121 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
         detected_parts_cam_5_.emplace_back(color, type, position);
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
+}
+
+rcl_interfaces::msg::SetParametersResult Final::RobotController::parameters_cb(const std::vector<rclcpp::Parameter> &parameters)
+{
+    // Watch for change in parameters and set the result.
+    rcl_interfaces::msg::SetParametersResult result;
+    result.successful = true;
+    result.reason = "success";
+    for (const auto &param : parameters)
+    {
+        if (param.get_name() == "aruco_0")
+        {
+            aruco_0_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_0.wp1.type")
+        {
+            a0_wp1_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_0.wp1.color")
+        {
+            a0_wp1_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_0.wp2.type")
+        {
+            a0_wp2_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_0.wp2.color")
+        {
+            a0_wp2_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_0.wp3.type")
+        {
+            a0_wp3_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_0.wp3.color")
+        {
+            a0_wp3_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_0.wp4.type")
+        {
+            a0_wp4_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_0.wp4.color")
+        {
+            a0_wp4_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_0.wp5.type")
+        {
+            a0_wp5_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_0.wp5.color")
+        {
+            a0_wp5_color_ = param.as_string();
+        }
+
+        if (param.get_name() == "aruco_1")
+        {
+            aruco_1_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_1.wp1.type")
+        {
+            a1_wp1_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_1.wp1.color")
+        {
+            a1_wp1_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_1.wp2.type")
+        {
+            a1_wp2_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_1.wp2.color")
+        {
+            a1_wp2_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_1.wp3.type")
+        {
+            a1_wp3_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_1.wp3.color")
+        {
+            a1_wp3_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_1.wp4.type")
+        {
+            a1_wp4_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_1.wp4.color")
+        {
+            a1_wp4_color_ = param.as_string();
+        }
+
+        else if (param.get_name() == "aruco_1.wp5.type")
+        {
+            a1_wp5_type_ = param.as_string();
+        }
+        else if (param.get_name() == "aruco_1.wp5.color")
+        {
+            a1_wp5_color_ = param.as_string();
+        }
+
+        else
+        {
+            result.successful = false;
+            result.reason = "parameter not authorized to be modified";
+        }
+    }
+    return result;
 }
 
 int main(int argc, char **argv)
