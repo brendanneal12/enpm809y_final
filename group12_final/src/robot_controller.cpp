@@ -23,6 +23,7 @@ void Final::RobotController::advanced_camera_sub_cb_1_(const mage_msgs::msg::Adv
             part_type_1_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_1_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_1_(msg);
+            parts_in_world_.emplace_back(detected_parts_cam_1_);
             advanced_camera_subscription_1_.reset();
         }
     }
@@ -39,6 +40,7 @@ void Final::RobotController::advanced_camera_sub_cb_2_(const mage_msgs::msg::Adv
             part_type_2_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_2_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_2_(msg);
+            parts_in_world_.emplace_back(detected_parts_cam_2_);
             advanced_camera_subscription_2_.reset();
         }
     }
@@ -54,6 +56,7 @@ void Final::RobotController::advanced_camera_sub_cb_3_(const mage_msgs::msg::Adv
             part_type_3_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_3_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_3_(msg);
+            parts_in_world_.emplace_back(detected_parts_cam_3_);
             advanced_camera_subscription_3_.reset();
         }
     }
@@ -69,6 +72,7 @@ void Final::RobotController::advanced_camera_sub_cb_4_(const mage_msgs::msg::Adv
             part_type_4_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_4_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_4_(msg);
+            parts_in_world_.emplace_back(detected_parts_cam_4_);
             advanced_camera_subscription_4_.reset();
         }
     }
@@ -84,6 +88,7 @@ void Final::RobotController::advanced_camera_sub_cb_5_(const mage_msgs::msg::Adv
             part_type_5_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_5_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_5_(msg);
+            parts_in_world_.emplace_back(detected_parts_cam_5_);
             advanced_camera_subscription_5_.reset();
         }
     }
@@ -479,6 +484,14 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_5_.emplace_back(color, type, position);
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+    }
+}
+
+void Final::RobotController::generate_waypoints_from_params()
+{
+    if (this->has_parameter(marker_id_))
+    {
+        marker_instruction_ = this->get_parameter(marker_id_).get_value<std::string>();
     }
 }
 

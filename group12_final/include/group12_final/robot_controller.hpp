@@ -47,19 +47,19 @@ namespace Final
             a0_wp1_color_ = this->get_parameter("aruco_0.wp1.color").as_string();
             this->declare_parameter("aruco_0.wp2.type", "battery");
             a0_wp2_type_ = this->get_parameter("aruco_0.wp2.type").as_string();
-            this->declare_parameter("aruco_0.wp2.color", "green");
+            this->declare_parameter("aruco_0.wp2.color", "red");
             a0_wp2_color_ = this->get_parameter("aruco_0.wp2.color").as_string();
             this->declare_parameter("aruco_0.wp3.type", "battery");
             a0_wp3_type_ = this->get_parameter("aruco_0.wp3.type").as_string();
-            this->declare_parameter("aruco_0.wp3.color", "green");
+            this->declare_parameter("aruco_0.wp3.color", "orange");
             a0_wp3_color_ = this->get_parameter("aruco_0.wp3.color").as_string();
             this->declare_parameter("aruco_0.wp4.type", "battery");
             a0_wp4_type_ = this->get_parameter("aruco_0.wp4.type").as_string();
-            this->declare_parameter("aruco_0.wp4.color", "green");
+            this->declare_parameter("aruco_0.wp4.color", "purple");
             a0_wp4_color_ = this->get_parameter("aruco_0.wp4.color").as_string();
             this->declare_parameter("aruco_0.wp5.type", "battery");
             a0_wp5_type_ = this->get_parameter("aruco_0.wp5.type").as_string();
-            this->declare_parameter("aruco_0.wp5.color", "green");
+            this->declare_parameter("aruco_0.wp5.color", "blue");
             a0_wp5_color_ = this->get_parameter("aruco_0.wp5.color").as_string();
 
             aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp1_type_, a0_wp1_color_);
@@ -73,7 +73,7 @@ namespace Final
             aruco_1_ = this->get_parameter("aruco_1").as_string();
             this->declare_parameter("aruco_1.wp1.type", "battery");
             a1_wp1_type_ = this->get_parameter("aruco_1.wp1.type").as_string();
-            this->declare_parameter("aruco_1.wp1.color", "green");
+            this->declare_parameter("aruco_1.wp1.color", "blue");
             a1_wp1_color_ = this->get_parameter("aruco_1.wp1.color").as_string();
             this->declare_parameter("aruco_1.wp2.type", "battery");
             a1_wp2_type_ = this->get_parameter("aruco_1.wp2.type").as_string();
@@ -81,15 +81,15 @@ namespace Final
             a1_wp2_color_ = this->get_parameter("aruco_1.wp2.color").as_string();
             this->declare_parameter("aruco_1.wp3.type", "battery");
             a1_wp3_type_ = this->get_parameter("aruco_1.wp3.type").as_string();
-            this->declare_parameter("aruco_1.wp3.color", "green");
+            this->declare_parameter("aruco_1.wp3.color", "orange");
             a1_wp3_color_ = this->get_parameter("aruco_1.wp3.color").as_string();
-            this->declare_parameter("aruco_1.wp4.type", "battery");
+            this->declare_parameter("aruco_1.wp4.type", "red");
             a1_wp4_type_ = this->get_parameter("aruco_1.wp4.type").as_string();
-            this->declare_parameter("aruco_1.wp4.color", "green");
+            this->declare_parameter("aruco_1.wp4.color", "red");
             a1_wp4_color_ = this->get_parameter("aruco_1.wp4.color").as_string();
             this->declare_parameter("aruco_1.wp5.type", "battery");
             a1_wp5_type_ = this->get_parameter("aruco_1.wp5.type").as_string();
-            this->declare_parameter("aruco_1.wp5.color", "green");
+            this->declare_parameter("aruco_1.wp5.color", "purple");
             a1_wp5_color_ = this->get_parameter("aruco_1.wp5.color").as_string();
 
             aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp1_type_, a1_wp1_color_);
@@ -267,6 +267,7 @@ namespace Final
         // Marker Attributes
         std::string marker_id_;
         bool marker_got_{false};
+        std::string marker_instruction_;
 
         // Sim Attributes
         rclcpp::Time current_time_;
@@ -301,6 +302,14 @@ namespace Final
         std::string part_color_5_;
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_5_;
         bool part_got_cam_5_{false};
+
+        // Parts in World
+        std::vector<std::vector<std::tuple<std::string, std::string, std::array<double, 3>>>> parts_in_world_;
+
+        // Generated Waypoints
+        std::vector<std::array<double,2>> generated_waypoints_;
+
+
         // ======================================== methods ===========================================
 
         /**
@@ -462,5 +471,7 @@ namespace Final
          * @return result
          */
         rcl_interfaces::msg::SetParametersResult parameters_cb(const std::vector<rclcpp::Parameter> &parameters);
+
+        void generate_waypoints_from_params();
     }; // Class RobotController
 } // Namespace Final
