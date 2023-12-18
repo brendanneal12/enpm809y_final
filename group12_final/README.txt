@@ -26,4 +26,3 @@ Recommended IDE: Visual Studio Code
 2. Build and Source.
 3. In one terminal, execute: ros2 launch final_project final_project.launch.py
 4. In another terminal, source, then execute: ros2 launch group12_final robot_controller.launch.py
-5. In a third terminal, source, then execute: ros2 run group12_final naviagation

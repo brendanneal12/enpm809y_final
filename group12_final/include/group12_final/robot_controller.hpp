@@ -173,7 +173,6 @@ namespace Final
             // Set up clock subscriptions and bind it to a callback.
             clock_subscription_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", rclcpp::SensorDataQoS(),
                                                                                        std::bind(&RobotController::clock_sub_cb_, this, std::placeholders::_1));
-
             // Set up robot pose subscriptions and bind it to a callback.
             amcl_subscription_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>("/amcl_pose", rclcpp::SensorDataQoS(),
                                                                                                           std::bind(&RobotController::amcl_sub_cb_, this, std::placeholders::_1));
@@ -194,8 +193,11 @@ namespace Final
 
             parameter_cb_ = this->add_on_set_parameters_callback(std::bind(&RobotController::parameters_cb, this, std::placeholders::_1));
 
+            // Set up odometry subscription and bind it to a callback.
+            odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&RobotController::odom_sub_cb_, this, std::placeholders::_1));
+
             // // set the initial pose for navigation
-            set_initial_pose();
+            // set_initial_pose();
             // // pause for 5 seconds
             // std::this_thread::sleep_for(std::chrono::seconds(5));
             // // send the goal
@@ -255,6 +257,7 @@ namespace Final
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_5_;
         rclcpp::Subscription<rosgraph_msgs::msg::Clock>::SharedPtr clock_subscription_;
         rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr amcl_subscription_;
+        rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
 
         // Publishers
         rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_pub_;
@@ -307,6 +310,8 @@ namespace Final
 
         // Robot Attributes
         geometry_msgs::msg::PoseWithCovarianceStamped robot_current_pose_;
+
+        nav_msgs::msg::Odometry robot_initial_pose_;
 
         // Marker Attributes
         std::string marker_id_;
@@ -557,6 +562,13 @@ namespace Final
          *
          */
         void send_goal();
+
+        /**
+         * @brief Subscriber callback to update current position of turtlebot.
+         * @param msg
+         */
+
+        void odom_sub_cb_(const nav_msgs::msg::Odometry::SharedPtr msg);
 
     }; // Class RobotController
 } // Namespace Final

@@ -26,13 +26,6 @@ def generate_launch_description():
         parameters=[parameter_file]
     )
 
-    # cartographer_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(os.path.join(get_package_share_directory(
-    #         'turtlebot3_cartographer'), 'launch', 'cartographer.launch.py')),
-    #     launch_arguments={'use_sim_time': 'True'}.items()
-    # )
-
     ld = LaunchDescription()
     ld.add_action(robot_controller)
-    # ld.add_action(cartographer_launch)
     return ld

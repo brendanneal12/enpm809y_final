@@ -640,14 +640,15 @@ void Final::RobotController::amcl_sub_cb_(const geometry_msgs::msg::PoseWithCova
 
 void Final::RobotController::set_initial_pose()
 {
+    RCLCPP_INFO_STREAM(this->get_logger(), "Setting Initial Pose");
     auto message = geometry_msgs::msg::PoseWithCovarianceStamped();
     message.header.frame_id = "map";
-    message.pose.pose.position.x = 1.0;
-    message.pose.pose.position.y = -1.59;
-    message.pose.pose.orientation.x = 0.007825;
-    message.pose.pose.orientation.y = 0.0;
-    message.pose.pose.orientation.z = -0.7068252;
-    message.pose.pose.orientation.w = 0.7073883;
+    message.pose.pose.position.x = robot_initial_pose_.pose.pose.position.x;
+    message.pose.pose.position.y = robot_initial_pose_.pose.pose.position.y;
+    message.pose.pose.orientation.x = robot_initial_pose_.pose.pose.orientation.x;
+    message.pose.pose.orientation.y = robot_initial_pose_.pose.pose.orientation.y;
+    message.pose.pose.orientation.z = robot_initial_pose_.pose.pose.orientation.z;
+    message.pose.pose.orientation.w = robot_initial_pose_.pose.pose.orientation.w;
     initial_pose_pub_->publish(message);
 }
 //===============================================
@@ -735,6 +736,17 @@ void Final::RobotController::result_callback(
         return;
     }
     rclcpp::shutdown();
+}
+
+void Final::RobotController::odom_sub_cb_(const nav_msgs::msg::Odometry::SharedPtr msg)
+{
+    // Grab the robot's initial position and orientation.
+    robot_initial_pose_ = *msg;
+    Final::RobotController::set_initial_pose();
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
+    // // send the goal
+    // send_goal();
+    odom_subscription_.reset();
 }
 
 int main(int argc, char **argv)
