@@ -17,6 +17,7 @@
 #include <rcl_interfaces/msg/set_parameters_result.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <rosgraph_msgs/msg/clock.hpp>
+#include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 
 /**
  * @brief Namespace Used for Final Project
@@ -29,6 +30,7 @@ namespace Final
      */
     class RobotController : public rclcpp::Node
     {
+
     public:
         /**
          * @brief Constructor
@@ -159,6 +161,9 @@ namespace Final
             clock_subscription_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", rclcpp::SensorDataQoS(),
                                                                                        std::bind(&RobotController::clock_sub_cb_, this, std::placeholders::_1));
 
+            // Set up robot pose subscriptions and bind it to a callback.
+            amcl_subscription_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>("/amcl_pose", rclcpp::SensorDataQoS(),
+                                                                                                          std::bind(&RobotController::amcl_sub_cb_, this, std::placeholders::_1));
             // Listener Timer 1
             part_listener_timer_1_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_1_, this));
 
@@ -208,13 +213,12 @@ namespace Final
 
         // Aruco 0 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_0_waypoints_;
-        std::vector<std::array<double,3>> a0_wp_xy_;
+        std::vector<std::array<double, 3>> a0_wp_xy_;
 
         // Aruco 1 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_1_waypoints_;
-        std::vector<std::array<double,3>> a1_wp_xy_;
+        std::vector<std::array<double, 3>> a1_wp_xy_;
         // ======================================== attributes ========================================
-
         // Subscribers
         rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr turtle_camera_subscription_;
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_1_;
@@ -223,6 +227,7 @@ namespace Final
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_4_;
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_5_;
         rclcpp::Subscription<rosgraph_msgs::msg::Clock>::SharedPtr clock_subscription_;
+        rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr amcl_subscription_;
 
         // Broadcasters
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_1_;
@@ -266,6 +271,9 @@ namespace Final
         std::unique_ptr<tf2_ros::Buffer> part_tf_buffer_5_;
         rclcpp::TimerBase::SharedPtr part_listener_timer_5_;
 
+        // Robot Attributes
+        geometry_msgs::msg::PoseWithCovarianceStamped robot_current_pose_;
+
         // Marker Attributes
         std::string marker_id_;
         bool marker_got_{false};
@@ -305,11 +313,10 @@ namespace Final
         std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_5_;
         bool part_got_cam_5_{false};
 
-        std::map<std::tuple<std::string,std::string>, std::array<double,3>> parts_in_world_;
+        std::map<std::tuple<std::string, std::string>, std::array<double, 3>> parts_in_world_;
 
         // Generated Waypoints
-        std::vector<std::array<double,3>> use_waypoints_;
-
+        std::vector<std::array<double, 3>> use_waypoints_;
 
         // ======================================== methods ===========================================
 
@@ -355,6 +362,13 @@ namespace Final
          */
 
         void clock_sub_cb_(const rosgraph_msgs::msg::Clock::SharedPtr msg);
+
+        /**
+         * @brief Subscriber callback to update current time.
+         * @param msg
+         */
+
+        void amcl_sub_cb_(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg);
 
         /**
          * @brief Timer callback to broadcast part pose to tf. from camera 1.
@@ -473,6 +487,10 @@ namespace Final
          */
         rcl_interfaces::msg::SetParametersResult parameters_cb(const std::vector<rclcpp::Parameter> &parameters);
 
+        /**
+         * @brief Generates X-Y waypoints from parameters.
+         */
         void generate_waypoints_from_params();
+
     }; // Class RobotController
 } // Namespace Final

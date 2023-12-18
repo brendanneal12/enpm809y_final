@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(mage_msgs REQUIRED)
-find_package(nav_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -17,12 +17,19 @@ find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(ros2_aruco_interfaces REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_components REQUIRED)
 
 include_directories(include/group12_final)
 
 add_executable(robot_controller src/robot_controller.cpp)
-ament_target_dependencies(robot_controller rclcpp geometry_msgs nav_msgs mage_msgs tf2_ros tf2 tf2_geometry_msgs ros2_aruco_interfaces)
+ament_target_dependencies(robot_controller rclcpp geometry_msgs nav_msgs mage_msgs tf2_ros tf2 tf2_geometry_msgs ros2_aruco_interfaces rclcpp_action)
 install(TARGETS robot_controller DESTINATION lib/${PROJECT_NAME})
+
+add_executable(navigation src/navigation.cpp)
+ament_target_dependencies(navigation rclcpp geometry_msgs rclcpp_action rclcpp_components nav2_msgs)
+install(TARGETS navigation DESTINATION lib/${PROJECT_NAME})
+
 
 install(DIRECTORY include config launch DESTINATION share/${PROJECT_NAME})
 

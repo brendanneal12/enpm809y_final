@@ -453,7 +453,7 @@ void Final::RobotController::add_seen_part_4(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_4_.emplace_back(color, type, position);
         parts_in_world_[std::make_tuple(color, type)] = position;
-        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type << " " << position[0]);
     }
 }
 
@@ -482,7 +482,7 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
     {
         // Add new part to data structure.
         detected_parts_cam_5_.emplace_back(color, type, position);
-        parts_in_world_.emplace(std::make_tuple(color,type), position);
+        parts_in_world_.emplace(std::make_tuple(color, type), position);
         RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
     }
 }
@@ -630,6 +630,13 @@ rcl_interfaces::msg::SetParametersResult Final::RobotController::parameters_cb(c
         }
     }
     return result;
+}
+
+
+
+void Final::RobotController::amcl_sub_cb_(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
+{
+    robot_current_pose_ = *msg;
 }
 
 int main(int argc, char **argv)
