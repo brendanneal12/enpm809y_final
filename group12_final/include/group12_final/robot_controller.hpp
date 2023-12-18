@@ -181,6 +181,13 @@ namespace Final
 
             parameter_cb_ = this->add_on_set_parameters_callback(std::bind(&RobotController::parameters_cb, this, std::placeholders::_1));
         }
+        // ======================================== accessors ========================================
+
+        /**
+         * @brief public method to access private attribute: waypoints.
+         * @return waypoints
+        */
+        std::vector<std::array<double, 2>> get_waypoints();
 
     private:
         // ======================================== parameters ========================================
@@ -213,11 +220,11 @@ namespace Final
 
         // Aruco 0 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_0_waypoints_;
-        std::vector<std::array<double, 3>> a0_wp_xy_;
+        std::vector<std::array<double, 2>> a0_wp_xy_;
 
         // Aruco 1 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_1_waypoints_;
-        std::vector<std::array<double, 3>> a1_wp_xy_;
+        std::vector<std::array<double, 2>> a1_wp_xy_;
         // ======================================== attributes ========================================
         // Subscribers
         rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr turtle_camera_subscription_;
@@ -286,37 +293,38 @@ namespace Final
         // Camera 1
         std::string part_type_1_;
         std::string part_color_1_;
-        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_1_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 2>>> detected_parts_cam_1_;
         bool part_got_cam_1_{false};
 
         // Camera 2
         std::string part_type_2_;
         std::string part_color_2_;
-        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_2_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 2>>> detected_parts_cam_2_;
         bool part_got_cam_2_{false};
 
         // Camera 3
         std::string part_type_3_;
         std::string part_color_3_;
-        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_3_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 2>>> detected_parts_cam_3_;
         bool part_got_cam_3_{false};
 
         // Camera 4
         std::string part_type_4_;
         std::string part_color_4_;
-        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_4_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 2>>> detected_parts_cam_4_;
         bool part_got_cam_4_{false};
 
         // Camera 5
         std::string part_type_5_;
         std::string part_color_5_;
-        std::vector<std::tuple<std::string, std::string, std::array<double, 3>>> detected_parts_cam_5_;
+        std::vector<std::tuple<std::string, std::string, std::array<double, 2>>> detected_parts_cam_5_;
         bool part_got_cam_5_{false};
 
-        std::map<std::tuple<std::string, std::string>, std::array<double, 3>> parts_in_world_;
+        // Map to store parts in the world.
+        std::map<std::tuple<std::string, std::string>, std::array<double, 2>> parts_in_world_;
 
         // Generated Waypoints
-        std::vector<std::array<double, 3>> use_waypoints_;
+        std::vector<std::array<double, 2>> use_waypoints_;
 
         // ======================================== methods ===========================================
 
@@ -449,11 +457,11 @@ namespace Final
          * @param type
          * @param position
          */
-        void add_seen_part_1(const std::string &color, const std::string &type, const std::array<double, 3> &position);
-        void add_seen_part_2(const std::string &color, const std::string &type, const std::array<double, 3> &position);
-        void add_seen_part_3(const std::string &color, const std::string &type, const std::array<double, 3> &position);
-        void add_seen_part_4(const std::string &color, const std::string &type, const std::array<double, 3> &position);
-        void add_seen_part_5(const std::string &color, const std::string &type, const std::array<double, 3> &position);
+        void add_seen_part_1(const std::string &color, const std::string &type, const std::array<double, 2> &position);
+        void add_seen_part_2(const std::string &color, const std::string &type, const std::array<double, 2> &position);
+        void add_seen_part_3(const std::string &color, const std::string &type, const std::array<double, 2> &position);
+        void add_seen_part_4(const std::string &color, const std::string &type, const std::array<double, 2> &position);
+        void add_seen_part_5(const std::string &color, const std::string &type, const std::array<double, 2> &position);
 
         /**
          * @brief Convert a part type to a string

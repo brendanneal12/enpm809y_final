@@ -213,10 +213,9 @@ void Final::RobotController::part_frame_listener_1_()
     {
         // Look up transformation between detected part and odom frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_1_frame", tf2::TimePointZero);
-        std::array<double, 3> part_location;
+        std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
-        part_location[2] = part.transform.translation.z;
         Final::RobotController::add_seen_part_1(part_color_1_, part_type_1_, part_location);
     }
     catch (const tf2::TransformException &except)
@@ -233,10 +232,9 @@ void Final::RobotController::part_frame_listener_2_()
     {
         // Look up transformation between detected part and odom frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_2_frame", tf2::TimePointZero);
-        std::array<double, 3> part_location;
+        std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
-        part_location[2] = part.transform.translation.z;
         Final::RobotController::add_seen_part_2(part_color_2_, part_type_2_, part_location);
     }
     catch (const tf2::TransformException &except)
@@ -253,10 +251,9 @@ void Final::RobotController::part_frame_listener_3_()
     {
         // Look up transformation between detected part and odom frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_3_frame", tf2::TimePointZero);
-        std::array<double, 3> part_location;
+        std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
-        part_location[2] = part.transform.translation.z;
         Final::RobotController::add_seen_part_3(part_color_3_, part_type_3_, part_location);
     }
     catch (const tf2::TransformException &except)
@@ -273,10 +270,9 @@ void Final::RobotController::part_frame_listener_4_()
     {
         // Look up transformation between detected part and odom frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_4_frame", tf2::TimePointZero);
-        std::array<double, 3> part_location;
+        std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
-        part_location[2] = part.transform.translation.z;
         Final::RobotController::add_seen_part_4(part_color_4_, part_type_4_, part_location);
     }
     catch (const tf2::TransformException &except)
@@ -293,10 +289,9 @@ void Final::RobotController::part_frame_listener_5_()
     {
         // Look up transformation between detected part and odom frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_5_frame", tf2::TimePointZero);
-        std::array<double, 3> part_location;
+        std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
         part_location[1] = part.transform.translation.y;
-        part_location[2] = part.transform.translation.z;
         Final::RobotController::add_seen_part_5(part_color_5_, part_type_5_, part_location);
     }
     catch (const tf2::TransformException &except)
@@ -353,7 +348,7 @@ bool Final::RobotController::check_duplicate_parts_1(const std::string &new_part
     return false;
 }
 
-void Final::RobotController::add_seen_part_1(const std::string &color, const std::string &type, const std::array<double, 3> &position)
+void Final::RobotController::add_seen_part_1(const std::string &color, const std::string &type, const std::array<double, 2> &position)
 {
     // Check if new detected part matches an existing member.
     bool duplicate_check = Final::RobotController::check_duplicate_parts_1(color, type);
@@ -363,7 +358,8 @@ void Final::RobotController::add_seen_part_1(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_1_.emplace_back(color, type, position);
         parts_in_world_[std::make_tuple(color, type)] = position;
-        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type <<
+         " at (" << parts_in_world_[std::make_tuple(color, type)][0] << "," << parts_in_world_[std::make_tuple(color, type)][1] << ")");
     }
 }
 
@@ -383,7 +379,7 @@ bool Final::RobotController::check_duplicate_parts_2(const std::string &new_part
     return false;
 }
 
-void Final::RobotController::add_seen_part_2(const std::string &color, const std::string &type, const std::array<double, 3> &position)
+void Final::RobotController::add_seen_part_2(const std::string &color, const std::string &type, const std::array<double, 2> &position)
 {
     // Check if new detected part matches an existing member.
     bool duplicate_check = Final::RobotController::check_duplicate_parts_2(color, type);
@@ -393,7 +389,8 @@ void Final::RobotController::add_seen_part_2(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_2_.emplace_back(color, type, position);
         parts_in_world_[std::make_tuple(color, type)] = position;
-        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type <<
+         " at (" << parts_in_world_[std::make_tuple(color, type)][0] << "," << parts_in_world_[std::make_tuple(color, type)][1] << ")");
     }
 }
 
@@ -413,7 +410,7 @@ bool Final::RobotController::check_duplicate_parts_3(const std::string &new_part
     return false;
 }
 
-void Final::RobotController::add_seen_part_3(const std::string &color, const std::string &type, const std::array<double, 3> &position)
+void Final::RobotController::add_seen_part_3(const std::string &color, const std::string &type, const std::array<double, 2> &position)
 {
     // Check if new detected part matches an existing member.
     bool duplicate_check = Final::RobotController::check_duplicate_parts_3(color, type);
@@ -423,7 +420,8 @@ void Final::RobotController::add_seen_part_3(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_3_.emplace_back(color, type, position);
         parts_in_world_[std::make_tuple(color, type)] = position;
-        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type <<
+         " at (" << parts_in_world_[std::make_tuple(color, type)][0] << "," << parts_in_world_[std::make_tuple(color, type)][1] << ")");
     }
 }
 
@@ -443,7 +441,7 @@ bool Final::RobotController::check_duplicate_parts_4(const std::string &new_part
     return false;
 }
 
-void Final::RobotController::add_seen_part_4(const std::string &color, const std::string &type, const std::array<double, 3> &position)
+void Final::RobotController::add_seen_part_4(const std::string &color, const std::string &type, const std::array<double, 2> &position)
 {
     // Check if new detected part matches an existing member.
     bool duplicate_check = Final::RobotController::check_duplicate_parts_4(color, type);
@@ -453,7 +451,8 @@ void Final::RobotController::add_seen_part_4(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_4_.emplace_back(color, type, position);
         parts_in_world_[std::make_tuple(color, type)] = position;
-        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type <<
+         " at (" << parts_in_world_[std::make_tuple(color, type)][0] << "," << parts_in_world_[std::make_tuple(color, type)][1] << ")");
     }
 }
 
@@ -473,7 +472,7 @@ bool Final::RobotController::check_duplicate_parts_5(const std::string &new_part
     return false;
 }
 
-void Final::RobotController::add_seen_part_5(const std::string &color, const std::string &type, const std::array<double, 3> &position)
+void Final::RobotController::add_seen_part_5(const std::string &color, const std::string &type, const std::array<double, 2> &position)
 {
     // Check if new detected part matches an existing member.
     bool duplicate_check = Final::RobotController::check_duplicate_parts_5(color, type);
@@ -483,7 +482,8 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
         // Add new part to data structure.
         detected_parts_cam_5_.emplace_back(color, type, position);
         parts_in_world_.emplace(std::make_tuple(color, type), position);
-        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type);
+        RCLCPP_INFO_STREAM(this->get_logger(), "Detected a Part: " << color << " " << type <<
+         " at (" << parts_in_world_[std::make_tuple(color, type)][0] << "," << parts_in_world_[std::make_tuple(color, type)][1] << ")");
     }
 }
 
@@ -630,6 +630,11 @@ rcl_interfaces::msg::SetParametersResult Final::RobotController::parameters_cb(c
         }
     }
     return result;
+}
+
+std::vector<std::array<double, 2>> Final::RobotController::get_waypoints(){
+    generate_waypoints_from_params();
+    return use_waypoints_;
 }
 
 

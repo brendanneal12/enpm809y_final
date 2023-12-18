@@ -6,6 +6,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 // Required for following waypoints
 #include "nav2_msgs/action/navigate_through_poses.hpp"
+// #include "robot_controller.hpp"
 
 /**
  * @brief Namespace for Final Project
@@ -41,6 +42,8 @@ namespace Final
         }
 
     private:
+
+        // std::shared_ptr<RobotController> robot_controller;
         /**
          * @brief Publisher to the topic /initialpose
          *

@@ -27,15 +27,19 @@ void Final::Navigation::send_goal()
     rclcpp::shutdown();
   }
 
+  // auto waypoints = robot_controller->get_waypoints();
+
   auto goal_msg = NavigateToPose::Goal();
   goal_msg.pose.header.frame_id = "map"; // MAKE SURE TO INLCUDE THIS!!!!
+  // goal_msg.pose.pose.position.x = waypoints[0][0];
+  // goal_msg.pose.pose.position.y = waypoints[0][1];
   goal_msg.pose.pose.position.x = 1.5;
-  goal_msg.pose.pose.position.y = 0.0;
+  goal_msg.pose.pose.position.y = -1.5;
   goal_msg.pose.pose.position.z = 0.0;
   goal_msg.pose.pose.orientation.x = 0.0;
   goal_msg.pose.pose.orientation.y = 0.0;
   goal_msg.pose.pose.orientation.z = 0.0;
-  goal_msg.pose.pose.orientation.w = 0.7787;
+  goal_msg.pose.pose.orientation.w = 0.0;
 
   RCLCPP_INFO(this->get_logger(), "Sending goal");
 
@@ -73,7 +77,7 @@ void Final::Navigation::feedback_callback(
     GoalHandleNavigation::SharedPtr,
     const std::shared_ptr<const NavigateToPose::Feedback> feedback)
 {
-  (void) feedback;
+  (void)feedback;
   RCLCPP_INFO(this->get_logger(), "Robot is driving towards the goal");
 }
 
