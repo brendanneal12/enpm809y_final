@@ -22,6 +22,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 // Required for following waypoints
 #include "nav2_msgs/action/navigate_through_poses.hpp"
+#include "nav2_msgs/action/follow_waypoints.hpp"
 
 /**
  * @brief Namespace Used for Final Project
@@ -203,14 +204,6 @@ namespace Final
             // // send the goal
             // send_goal();
         }
-        // ======================================== accessors ========================================
-
-        /**
-         * @brief public method to access private attribute: waypoints.
-         * @return waypoints
-         */
-        std::vector<std::array<double, 2>> get_waypoints();
-
     private:
         // ======================================== parameters ========================================
         OnSetParametersCallbackHandle::SharedPtr parameter_cb_;
@@ -242,11 +235,9 @@ namespace Final
 
         // Aruco 0 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_0_waypoints_;
-        std::vector<std::array<double, 2>> a0_wp_xy_;
 
         // Aruco 1 Waypoints
         std::vector<std::tuple<std::string, std::string, std::string>> aruco_1_waypoints_;
-        std::vector<std::array<double, 2>> a1_wp_xy_;
         // ======================================== attributes ========================================
         // Subscribers
         rclcpp::Subscription<ros2_aruco_interfaces::msg::ArucoMarkers>::SharedPtr turtle_camera_subscription_;
@@ -356,7 +347,10 @@ namespace Final
         std::map<std::tuple<std::string, std::string>, std::array<double, 2>> parts_in_world_;
 
         // Generated Waypoints
-        std::vector<std::array<double, 2>> use_waypoints_;
+        std::vector<std::tuple<std::string, std::string, std::string>>  use_waypoints_;
+
+        // Initial Pose Boolean
+        bool initial_pose_set_{false};
 
         // ======================================== methods ===========================================
 

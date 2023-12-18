@@ -19,11 +19,11 @@ void Final::RobotController::advanced_camera_sub_cb_1_(const mage_msgs::msg::Adv
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
-            part_got_cam_1_ = true;
             part_type_1_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_1_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_1_(msg);
             advanced_camera_subscription_1_.reset();
+            part_got_cam_1_ = true;
         }
     }
 }
@@ -35,11 +35,11 @@ void Final::RobotController::advanced_camera_sub_cb_2_(const mage_msgs::msg::Adv
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
-            part_got_cam_2_ = true;
             part_type_2_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_2_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_2_(msg);
             advanced_camera_subscription_2_.reset();
+            part_got_cam_2_ = true;
         }
     }
 }
@@ -55,6 +55,7 @@ void Final::RobotController::advanced_camera_sub_cb_3_(const mage_msgs::msg::Adv
             part_color_3_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_3_(msg);
             advanced_camera_subscription_3_.reset();
+            part_got_cam_3_ = true;
         }
     }
 }
@@ -70,6 +71,7 @@ void Final::RobotController::advanced_camera_sub_cb_4_(const mage_msgs::msg::Adv
             part_color_4_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_4_(msg);
             advanced_camera_subscription_4_.reset();
+            part_got_cam_4_ = true;
         }
     }
 }
@@ -85,6 +87,7 @@ void Final::RobotController::advanced_camera_sub_cb_5_(const mage_msgs::msg::Adv
             part_color_5_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
             Final::RobotController::part_broadcast_timer_cb_5_(msg);
             advanced_camera_subscription_5_.reset();
+            part_got_cam_5_ = true;
         }
     }
 }
@@ -491,24 +494,12 @@ void Final::RobotController::generate_waypoints_from_params()
 
     if (marker_instruction_ == "aruco_0")
     {
-        RCLCPP_INFO_STREAM(this->get_logger(), "Generating Waypoints: Aruco 0");
-        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp1_color_, a0_wp1_type_)]);
-        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp2_color_, a0_wp2_type_)]);
-        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp3_color_, a0_wp3_type_)]);
-        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp4_color_, a0_wp4_type_)]);
-        a0_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a0_wp5_color_, a0_wp5_type_)]);
-        use_waypoints_ = a0_wp_xy_;
+        use_waypoints_ = aruco_0_waypoints_;
     }
 
     else if (marker_instruction_ == "aruco_1")
     {
-        RCLCPP_INFO_STREAM(this->get_logger(), "Generating Waypoints: Aruco 1");
-        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp1_color_, a1_wp1_type_)]);
-        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp2_color_, a1_wp2_type_)]);
-        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp3_color_, a1_wp3_type_)]);
-        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp4_color_, a1_wp4_type_)]);
-        a1_wp_xy_.emplace_back(parts_in_world_[std::make_tuple(a1_wp5_color_, a1_wp5_type_)]);
-        use_waypoints_ = a1_wp_xy_;
+        use_waypoints_ = aruco_1_waypoints_;
     }
 }
 
@@ -627,11 +618,6 @@ rcl_interfaces::msg::SetParametersResult Final::RobotController::parameters_cb(c
     return result;
 }
 
-std::vector<std::array<double, 2>> Final::RobotController::get_waypoints()
-{
-    generate_waypoints_from_params();
-    return use_waypoints_;
-}
 
 void Final::RobotController::amcl_sub_cb_(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
 {
@@ -663,14 +649,11 @@ void Final::RobotController::send_goal()
         rclcpp::shutdown();
     }
 
-    auto waypoints = Final::RobotController::get_waypoints();
-
+    generate_waypoints_from_params();
     auto goal_msg = NavigateToPose::Goal();
     goal_msg.pose.header.frame_id = "map";
-    goal_msg.pose.pose.position.x = waypoints[0][0];
-    goal_msg.pose.pose.position.y = waypoints[0][1];
-    // goal_msg.pose.pose.position.x = 1.5;
-    // goal_msg.pose.pose.position.y = -1.5;
+    goal_msg.pose.pose.position.x = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[0]), std::get<2>(use_waypoints_[0]))][0];
+    goal_msg.pose.pose.position.y = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[0]), std::get<2>(use_waypoints_[0]))][1];
     goal_msg.pose.pose.position.z = 0.0;
     goal_msg.pose.pose.orientation.x = 0.0;
     goal_msg.pose.pose.orientation.y = 0.0;
@@ -741,12 +724,19 @@ void Final::RobotController::result_callback(
 void Final::RobotController::odom_sub_cb_(const nav_msgs::msg::Odometry::SharedPtr msg)
 {
     // Grab the robot's initial position and orientation.
-    robot_initial_pose_ = *msg;
-    Final::RobotController::set_initial_pose();
-    // std::this_thread::sleep_for(std::chrono::seconds(5));
-    // // send the goal
-    // send_goal();
-    odom_subscription_.reset();
+    if (!initial_pose_set_)
+    {
+        initial_pose_set_ = true;
+        robot_initial_pose_ = *msg;
+        Final::RobotController::set_initial_pose();
+    }
+
+    if ((part_got_cam_1_) && (part_got_cam_2_) && (part_got_cam_3_) && (part_got_cam_4_) && (part_got_cam_5_) && (marker_got_))
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        // send the goal
+        send_goal();
+    }
 }
 
 int main(int argc, char **argv)
