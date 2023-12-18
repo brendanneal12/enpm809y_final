@@ -30,7 +30,7 @@ void Final::Navigation::send_goal()
   // auto waypoints = robot_controller->get_waypoints();
 
   auto goal_msg = NavigateToPose::Goal();
-  goal_msg.pose.header.frame_id = "map"; // MAKE SURE TO INLCUDE THIS!!!!
+  goal_msg.pose.header.frame_id = "map";
   // goal_msg.pose.pose.position.x = waypoints[0][0];
   // goal_msg.pose.pose.position.y = waypoints[0][1];
   goal_msg.pose.pose.position.x = 1.5;

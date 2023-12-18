@@ -18,6 +18,10 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <rosgraph_msgs/msg/clock.hpp>
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
+#include "nav2_msgs/action/navigate_to_pose.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
+// Required for following waypoints
+#include "nav2_msgs/action/navigate_through_poses.hpp"
 
 /**
  * @brief Namespace Used for Final Project
@@ -36,8 +40,17 @@ namespace Final
          * @brief Constructor
          * @param node_name
          */
+        using NavigateToPose = nav2_msgs::action::NavigateToPose;
+        using GoalHandleNavigation = rclcpp_action::ClientGoalHandle<NavigateToPose>;
         RobotController(std::string node_name) : Node(node_name)
         {
+            // initialize the client
+            client_ =
+                rclcpp_action::create_client<NavigateToPose>(this, "navigate_to_pose");
+            // initialize the publisher
+            initial_pose_pub_ =
+                this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>(
+                    "initialpose", 10);
 
             // Declare parameters -> Grabs from .yaml via launch file.
             // Aruco 0
@@ -180,13 +193,20 @@ namespace Final
             part_listener_timer_5_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_5_, this));
 
             parameter_cb_ = this->add_on_set_parameters_callback(std::bind(&RobotController::parameters_cb, this, std::placeholders::_1));
+
+            // // set the initial pose for navigation
+            set_initial_pose();
+            // // pause for 5 seconds
+            // std::this_thread::sleep_for(std::chrono::seconds(5));
+            // // send the goal
+            // send_goal();
         }
         // ======================================== accessors ========================================
 
         /**
          * @brief public method to access private attribute: waypoints.
          * @return waypoints
-        */
+         */
         std::vector<std::array<double, 2>> get_waypoints();
 
     private:
@@ -235,6 +255,13 @@ namespace Final
         rclcpp::Subscription<mage_msgs::msg::AdvancedLogicalCameraImage>::SharedPtr advanced_camera_subscription_5_;
         rclcpp::Subscription<rosgraph_msgs::msg::Clock>::SharedPtr clock_subscription_;
         rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr amcl_subscription_;
+
+        // Publishers
+        rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_pub_;
+
+        // Client
+        rclcpp_action::Client<NavigateToPose>::SharedPtr client_;
+        //   rclcpp::TimerBase::SharedPtr timer_;
 
         // Broadcasters
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_1_;
@@ -499,6 +526,37 @@ namespace Final
          * @brief Generates X-Y waypoints from parameters.
          */
         void generate_waypoints_from_params();
+
+        /**
+         * @brief Method to send initial pose of robot using the client
+         *
+         */
+        void set_initial_pose();
+
+        /**
+         * @brief Response from the server after sending the goal
+         */
+        void goal_response_callback(
+            std::shared_future<GoalHandleNavigation::SharedPtr> future);
+        /**
+         * @brief Feedback received while the robot is driving towards the goal
+         *
+         * @param feedback
+         */
+        void feedback_callback(
+            GoalHandleNavigation::SharedPtr,
+            const std::shared_ptr<const NavigateToPose::Feedback> feedback);
+        /**
+         * @brief Result after the action has completed
+         *
+         * @param result
+         */
+        void result_callback(const GoalHandleNavigation::WrappedResult &result);
+        /**
+         * @brief Method to build and send a goal using the client
+         *
+         */
+        void send_goal();
 
     }; // Class RobotController
 } // Namespace Final
