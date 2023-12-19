@@ -197,7 +197,7 @@ namespace Final
             // Set up odometry subscription and bind it to a callback.
             odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&RobotController::odom_sub_cb_, this, std::placeholders::_1));
 
-            nav_timer_ = this->create_wall_timer(std::chrono::milliseconds(2000), std::bind(&RobotController::nav_timer_cb_, this));
+            nav_timer_ = this->create_wall_timer(std::chrono::milliseconds(20000), std::bind(&RobotController::nav_timer_cb_, this));
         }
     private:
         // ======================================== parameters ========================================

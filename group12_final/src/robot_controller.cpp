@@ -672,7 +672,7 @@ void Final::RobotController::send_goal()
 
     client_->async_send_goal(goal_msg, send_goal_options);
 
-    // movement_ctr_ += 1;
+    movement_ctr_ += 1;
 }
 
 //===============================================
@@ -700,7 +700,6 @@ void Final::RobotController::feedback_callback(
     RCLCPP_INFO(this->get_logger(), "Robot is driving towards the goal");
     if (feedback->distance_remaining < 0.1){
         RCLCPP_INFO(this->get_logger(), "Robot has reached a waypoint, switching to next goal.");
-        movement_ctr_+=1;
     }
 }
 
