@@ -180,16 +180,16 @@ namespace Final
             // Listener Timer 1
             part_listener_timer_1_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_1_, this));
 
-            // Listener Timer 1
+            // Listener Timer 2
             part_listener_timer_2_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_2_, this));
 
-            // Listener Timer 1
+            // Listener Timer 3
             part_listener_timer_3_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_3_, this));
 
-            // Listener Timer 1
+            // Listener Timer 4
             part_listener_timer_4_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_4_, this));
 
-            // Listener Timer 1
+            // Listener Timer 5
             part_listener_timer_5_ = this->create_wall_timer(std::chrono::milliseconds(1000), std::bind(&RobotController::part_frame_listener_5_, this));
 
             parameter_cb_ = this->add_on_set_parameters_callback(std::bind(&RobotController::parameters_cb, this, std::placeholders::_1));
@@ -197,12 +197,7 @@ namespace Final
             // Set up odometry subscription and bind it to a callback.
             odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&RobotController::odom_sub_cb_, this, std::placeholders::_1));
 
-            // // set the initial pose for navigation
-            // set_initial_pose();
-            // // pause for 5 seconds
-            // std::this_thread::sleep_for(std::chrono::seconds(5));
-            // // send the goal
-            // send_goal();
+            nav_timer_ = this->create_wall_timer(std::chrono::milliseconds(2000), std::bind(&RobotController::nav_timer_cb_, this));
         }
     private:
         // ======================================== parameters ========================================
@@ -351,6 +346,10 @@ namespace Final
 
         // Initial Pose Boolean
         bool initial_pose_set_{false};
+
+        // Nav Timer
+        rclcpp::TimerBase::SharedPtr nav_timer_;
+        int movement_ctr_{0};
 
         // ======================================== methods ===========================================
 
@@ -563,6 +562,8 @@ namespace Final
          */
 
         void odom_sub_cb_(const nav_msgs::msg::Odometry::SharedPtr msg);
+
+        void nav_timer_cb_();
 
     }; // Class RobotController
 } // Namespace Final

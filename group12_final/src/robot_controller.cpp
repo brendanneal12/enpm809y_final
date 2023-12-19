@@ -618,7 +618,6 @@ rcl_interfaces::msg::SetParametersResult Final::RobotController::parameters_cb(c
     return result;
 }
 
-
 void Final::RobotController::amcl_sub_cb_(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
 {
     robot_current_pose_ = *msg;
@@ -652,8 +651,8 @@ void Final::RobotController::send_goal()
     generate_waypoints_from_params();
     auto goal_msg = NavigateToPose::Goal();
     goal_msg.pose.header.frame_id = "map";
-    goal_msg.pose.pose.position.x = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[0]), std::get<2>(use_waypoints_[0]))][0];
-    goal_msg.pose.pose.position.y = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[0]), std::get<2>(use_waypoints_[0]))][1];
+    goal_msg.pose.pose.position.x = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[movement_ctr_]), std::get<2>(use_waypoints_[movement_ctr_]))][0];
+    goal_msg.pose.pose.position.y = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[movement_ctr_]), std::get<2>(use_waypoints_[movement_ctr_]))][1];
     goal_msg.pose.pose.position.z = 0.0;
     goal_msg.pose.pose.orientation.x = 0.0;
     goal_msg.pose.pose.orientation.y = 0.0;
@@ -672,6 +671,8 @@ void Final::RobotController::send_goal()
         std::bind(&RobotController::result_callback, this, _1);
 
     client_->async_send_goal(goal_msg, send_goal_options);
+
+    // movement_ctr_ += 1;
 }
 
 //===============================================
@@ -696,8 +697,11 @@ void Final::RobotController::feedback_callback(
     GoalHandleNavigation::SharedPtr,
     const std::shared_ptr<const NavigateToPose::Feedback> feedback)
 {
-    (void)feedback;
     RCLCPP_INFO(this->get_logger(), "Robot is driving towards the goal");
+    if (feedback->distance_remaining < 0.1){
+        RCLCPP_INFO(this->get_logger(), "Robot has reached a waypoint, switching to next goal.");
+        movement_ctr_+=1;
+    }
 }
 
 //===============================================
@@ -730,7 +734,10 @@ void Final::RobotController::odom_sub_cb_(const nav_msgs::msg::Odometry::SharedP
         robot_initial_pose_ = *msg;
         Final::RobotController::set_initial_pose();
     }
+}
 
+void Final::RobotController::nav_timer_cb_()
+{
     if ((part_got_cam_1_) && (part_got_cam_2_) && (part_got_cam_3_) && (part_got_cam_4_) && (part_got_cam_5_) && (marker_got_))
     {
         std::this_thread::sleep_for(std::chrono::seconds(5));
