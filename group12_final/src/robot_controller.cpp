@@ -697,10 +697,8 @@ void Final::RobotController::feedback_callback(
     GoalHandleNavigation::SharedPtr,
     const std::shared_ptr<const NavigateToPose::Feedback> feedback)
 {
+    (void)feedback;
     RCLCPP_INFO(this->get_logger(), "Robot is driving towards the goal");
-    if (feedback->distance_remaining < 0.1){
-        RCLCPP_INFO(this->get_logger(), "Robot has reached a waypoint, switching to next goal.");
-    }
 }
 
 //===============================================
