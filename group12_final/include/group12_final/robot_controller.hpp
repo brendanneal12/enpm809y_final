@@ -20,7 +20,6 @@
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 #include "nav2_msgs/action/navigate_to_pose.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
-// Required for following waypoints
 #include "nav2_msgs/action/navigate_through_poses.hpp"
 
 
