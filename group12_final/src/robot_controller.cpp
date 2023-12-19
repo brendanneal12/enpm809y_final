@@ -2,26 +2,32 @@
 
 void Final::RobotController::turtle_camera_sub_cb_(const ros2_aruco_interfaces::msg::ArucoMarkers::SharedPtr msg)
 {
+    // If the marker has not been gotten
     if (!marker_got_)
     {
         // Get Aruco Marker ID.
         marker_id_ = "aruco_" + std::to_string(msg->marker_ids[0]);
         RCLCPP_INFO_STREAM(this->get_logger(), "Got Aruco Marker: " << marker_id_);
         marker_got_ = true;
+        // Stop subscribing to the RGB camera.
         turtle_camera_subscription_.reset();
     }
 }
 
 void Final::RobotController::advanced_camera_sub_cb_1_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg)
 {
+    // If the part from camera 1 has not been gotten
     if (!part_got_cam_1_)
     {
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
+            // Grab the part type and color
             part_type_1_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_1_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
+            // Broadcast the part's pose
             Final::RobotController::part_broadcast_timer_cb_1_(msg);
+            // Stop subscribing to camera 1.
             advanced_camera_subscription_1_.reset();
             part_got_cam_1_ = true;
         }
@@ -30,14 +36,18 @@ void Final::RobotController::advanced_camera_sub_cb_1_(const mage_msgs::msg::Adv
 
 void Final::RobotController::advanced_camera_sub_cb_2_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg)
 {
+    // If the part from camera 2 has not been gotten
     if (!part_got_cam_2_)
     {
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
+            // Grab the part type and color
             part_type_2_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_2_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
+            // Broadcast the pose
             Final::RobotController::part_broadcast_timer_cb_2_(msg);
+            // Stop subscribing to camera 2.
             advanced_camera_subscription_2_.reset();
             part_got_cam_2_ = true;
         }
@@ -46,14 +56,18 @@ void Final::RobotController::advanced_camera_sub_cb_2_(const mage_msgs::msg::Adv
 
 void Final::RobotController::advanced_camera_sub_cb_3_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg)
 {
+    // If the part from camera 3 has not been gotten
     if (!part_got_cam_3_)
     {
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
+            // Grab the part type and color
             part_type_3_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_3_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
+            // Broadcast the Pose
             Final::RobotController::part_broadcast_timer_cb_3_(msg);
+            // Stop subscribing to camera 3.
             advanced_camera_subscription_3_.reset();
             part_got_cam_3_ = true;
         }
@@ -62,14 +76,18 @@ void Final::RobotController::advanced_camera_sub_cb_3_(const mage_msgs::msg::Adv
 
 void Final::RobotController::advanced_camera_sub_cb_4_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg)
 {
+    // If the part from camera 4 has not been gotten
     if (!part_got_cam_4_)
     {
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
+            // Grab the part type and color
             part_type_4_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_4_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
+            // Broadcast the pose
             Final::RobotController::part_broadcast_timer_cb_4_(msg);
+            // Stop subscribing to camera 4
             advanced_camera_subscription_4_.reset();
             part_got_cam_4_ = true;
         }
@@ -78,14 +96,18 @@ void Final::RobotController::advanced_camera_sub_cb_4_(const mage_msgs::msg::Adv
 
 void Final::RobotController::advanced_camera_sub_cb_5_(const mage_msgs::msg::AdvancedLogicalCameraImage::SharedPtr msg)
 {
+    // If the part from camera 5 has not been gotten
     if (!part_got_cam_5_)
     {
         // If the incoming message is not empty.
         if (msg->part_poses.size() != 0)
         {
+            // Grab the part type and color
             part_type_5_ = Final::RobotController::convert_part_type_to_string(msg->part_poses[0].part.type);
             part_color_5_ = Final::RobotController::convert_part_color_to_string(msg->part_poses[0].part.color);
+            // Broadcast the pose
             Final::RobotController::part_broadcast_timer_cb_5_(msg);
+            // Stop subscribing to camera 5.
             advanced_camera_subscription_5_.reset();
             part_got_cam_5_ = true;
         }
@@ -214,7 +236,7 @@ void Final::RobotController::part_frame_listener_1_()
 
     try
     {
-        // Look up transformation between detected part and odom frame and store.
+        // Look up transformation between detected part and map frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_1_frame", tf2::TimePointZero);
         std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
@@ -233,7 +255,7 @@ void Final::RobotController::part_frame_listener_2_()
 
     try
     {
-        // Look up transformation between detected part and odom frame and store.
+        // Look up transformation between detected part and map frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_2_frame", tf2::TimePointZero);
         std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
@@ -252,7 +274,7 @@ void Final::RobotController::part_frame_listener_3_()
 
     try
     {
-        // Look up transformation between detected part and odom frame and store.
+        // Look up transformation between detected part and map frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_3_frame", tf2::TimePointZero);
         std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
@@ -271,7 +293,7 @@ void Final::RobotController::part_frame_listener_4_()
 
     try
     {
-        // Look up transformation between detected part and odom frame and store.
+        // Look up transformation between detected part and map frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_4_frame", tf2::TimePointZero);
         std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
@@ -290,7 +312,7 @@ void Final::RobotController::part_frame_listener_5_()
 
     try
     {
-        // Look up transformation between detected part and odom frame and store.
+        // Look up transformation between detected part and map frame and store.
         part = part_tf_buffer_1_->lookupTransform("map", "part_5_frame", tf2::TimePointZero);
         std::array<double, 2> part_location;
         part_location[0] = part.transform.translation.x;
@@ -487,17 +509,20 @@ void Final::RobotController::add_seen_part_5(const std::string &color, const std
 
 void Final::RobotController::generate_waypoints_from_params()
 {
+    // Check detected marker id against parameter values
     if (this->has_parameter(marker_id_))
     {
+        // Set the marker instruction based on parameters
         marker_instruction_ = this->get_parameter(marker_id_).get_value<std::string>();
     }
 
-    if (marker_instruction_ == "aruco_0")
+    // Decide which set of waypoints to follow based on ht marker instruction.
+    if (marker_instruction_ == std::get<0>(aruco_0_waypoints_[0]))
     {
         use_waypoints_ = aruco_0_waypoints_;
     }
 
-    else if (marker_instruction_ == "aruco_1")
+    else if (marker_instruction_ == std::get<0>(aruco_1_waypoints_[0]))
     {
         use_waypoints_ = aruco_1_waypoints_;
     }
@@ -620,11 +645,13 @@ rcl_interfaces::msg::SetParametersResult Final::RobotController::parameters_cb(c
 
 void Final::RobotController::amcl_sub_cb_(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
 {
+    // Grab the current pose of the robot from amcl
     robot_current_pose_ = *msg;
 }
 
 void Final::RobotController::set_initial_pose()
 {
+    // Set the initial pose of the robot from odom.
     RCLCPP_INFO_STREAM(this->get_logger(), "Setting Initial Pose");
     auto message = geometry_msgs::msg::PoseWithCovarianceStamped();
     message.header.frame_id = "map";
@@ -648,7 +675,9 @@ void Final::RobotController::send_goal()
         rclcpp::shutdown();
     }
 
+    // Generate the desired order of waypoints
     generate_waypoints_from_params();
+    // Initialize the goal message and grab the appropriate (x,y) from the waypoints.
     auto goal_msg = NavigateToPose::Goal();
     goal_msg.pose.header.frame_id = "map";
     goal_msg.pose.pose.position.x = parts_in_world_[std::make_tuple(std::get<1>(use_waypoints_[movement_ctr_]), std::get<2>(use_waypoints_[movement_ctr_]))][0];
@@ -735,8 +764,10 @@ void Final::RobotController::odom_sub_cb_(const nav_msgs::msg::Odometry::SharedP
 
 void Final::RobotController::nav_timer_cb_()
 {
+    // If all required information has been retrieved
     if ((part_got_cam_1_) && (part_got_cam_2_) && (part_got_cam_3_) && (part_got_cam_4_) && (part_got_cam_5_) && (marker_got_))
     {
+        // Sleep for 5 seconds
         std::this_thread::sleep_for(std::chrono::seconds(5));
         // send the goal
         send_goal();

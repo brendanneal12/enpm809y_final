@@ -22,7 +22,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 // Required for following waypoints
 #include "nav2_msgs/action/navigate_through_poses.hpp"
-#include "nav2_msgs/action/follow_waypoints.hpp"
+
 
 /**
  * @brief Namespace Used for Final Project
@@ -78,6 +78,7 @@ namespace Final
             this->declare_parameter("aruco_0.wp5.color", "blue");
             a0_wp5_color_ = this->get_parameter("aruco_0.wp5.color").as_string();
 
+            // Order waypoints by part color and part type.
             aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp1_color_, a0_wp1_type_);
             aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp2_color_, a0_wp2_type_);
             aruco_0_waypoints_.emplace_back(aruco_0_, a0_wp3_color_, a0_wp3_type_);
@@ -108,6 +109,8 @@ namespace Final
             this->declare_parameter("aruco_1.wp5.color", "purple");
             a1_wp5_color_ = this->get_parameter("aruco_1.wp5.color").as_string();
 
+
+            // Order waypoints by part color and type.
             aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp1_color_, a1_wp1_type_);
             aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp2_color_, a1_wp2_type_);
             aruco_1_waypoints_.emplace_back(aruco_1_, a1_wp3_color_, a1_wp3_type_);
@@ -197,10 +200,12 @@ namespace Final
             // Set up odometry subscription and bind it to a callback.
             odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&RobotController::odom_sub_cb_, this, std::placeholders::_1));
 
+            // Set up navigation timer and bind it to a callback.
             nav_timer_ = this->create_wall_timer(std::chrono::milliseconds(20000), std::bind(&RobotController::nav_timer_cb_, this));
         }
     private:
         // ======================================== parameters ========================================
+        //Parameter callback
         OnSetParametersCallbackHandle::SharedPtr parameter_cb_;
         // Aruco 0
         std::string aruco_0_;
@@ -253,18 +258,23 @@ namespace Final
         //   rclcpp::TimerBase::SharedPtr timer_;
 
         // Broadcasters
+        //Camera 1
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_1_;
         rclcpp::TimerBase::SharedPtr part_broadcast_timer_1_;
 
+        //Camera 2
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_2_;
         rclcpp::TimerBase::SharedPtr part_broadcast_timer_2_;
 
+        // Camera 3
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_3_;
         rclcpp::TimerBase::SharedPtr part_broadcast_timer_3_;
 
+        // Camera 4
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_4_;
         rclcpp::TimerBase::SharedPtr part_broadcast_timer_4_;
 
+        // Camera 5
         std::shared_ptr<tf2_ros::TransformBroadcaster> part_tf_broadcaster_5_;
         rclcpp::TimerBase::SharedPtr part_broadcast_timer_5_;
 
@@ -562,6 +572,10 @@ namespace Final
          */
 
         void odom_sub_cb_(const nav_msgs::msg::Odometry::SharedPtr msg);
+
+        /**
+         * @brief timer callback that updates the next waypoint the robot must go to.
+        */
 
         void nav_timer_cb_();
 
